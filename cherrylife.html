@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cherry 🍒 | Life & Scrapbook Manager</title>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --cherry-dark: #500b14;
+      --cherry-primary: #70121e;
+      --cherry-accent: #9e1c2f;
+      --pink-soft: #fbcfe8;
+      --pink-light: #fdf2f8;
+      --pink-medium: #f472b6;
+      --cream-bg: #fffbf7;
+      --cream-card: #ffffff;
+      --text-main: #3b0764;
+      --text-muted: #831843;
+      --border-soft: #fbcfe8;
+      --shadow-aesthetic: 0 10px 25px -5px rgba(112, 18, 30, 0.08), 0 8px 10px -6px rgba(112, 18, 30, 0.04);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--cream-bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: radial-gradient(#fbcfe8 0.75px, transparent 0.75px);
+      background-size: 20px 20px;
+    }
+
+    /* Auth Modal */
+    .auth-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(80, 11, 20, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .auth-card {
+      background: var(--cream-bg);
+      padding: 2rem 1.5rem;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      border: 2px solid var(--border-soft);
+      box-shadow: var(--shadow-aesthetic);
+    }
+
+    .auth-card h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--cherry-primary);
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--cherry-primary);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      outline: none;
+      font-size: 0.95rem;
+      background: #ffffff;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--cherry-accent);
+      box-shadow: 0 0 0 3px rgba(158, 28, 47, 0.15);
+    }
+
+    .btn {
+      cursor: pointer;
+      border: none;
+      padding: 0.75rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .btn-cherry {
+      background-color: var(--cherry-primary);
+      color: white;
+    }
+
+    .btn-cherry:hover, .btn-cherry:active {
+      background-color: var(--cherry-dark);
+    }
+
+    .btn-pink {
+      background-color: var(--pink-soft);
+      color: var(--cherry-dark);
+    }
+
+    /* Navigation Bar */
+    header {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-soft);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.8rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--cherry-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    nav {
+      display: flex;
+      gap: 0.3rem;
+      background: var(--pink-light);
+      padding: 0.3rem;
+      border-radius: 50px;
+      border: 1px solid var(--border-soft);
+      overflow-x: auto;
+      max-width: 100%;
+      scrollbar-width: none;
+    }
+
+    nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      padding: 0.5rem 0.9rem;
+      border-radius: 50px;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.2s;
+    }
+
+    .nav-btn.active, .nav-btn:hover {
+      background: var(--cherry-primary);
+      color: white;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--pink-light);
+      padding: 0.3rem 0.6rem;
+      border-radius: 50px;
+      border: 1px solid var(--border-soft);
+      white-space: nowrap;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--cherry-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1200px;
+      margin: 1rem auto;
+      padding: 0 1rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--cream-card);
+      border-radius: var(--radius-lg);
+      padding: 1.2rem;
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-aesthetic);
+      margin-bottom: 1.2rem;
+    }
+
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--cherry-primary), var(--cherry-dark));
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: var(--shadow-aesthetic);
+    }
+
+    .welcome-banner h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .welcome-banner p {
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+
+    /* Responsive Grids */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+
+    @media (min-width: 768px) {
+      .dashboard-grid { grid-template-columns: repeat(3, 1fr); }
+      .grid-2 { grid-template-columns: 2fr 1fr; }
+      .welcome-banner { flex-direction: row; align-items: center; justify-content: space-between; }
+      .card { padding: 1.8rem; }
+    }
+
+    /* Item Card & Forms */
+    .item-card {
+      background: var(--pink-light);
+      border: 1px solid var(--border-soft);
+      padding: 0.8rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .item-left {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .item-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--cherry-primary);
+    }
+
+    .item-title {
+      font-weight: 500;
+      color: var(--cherry-dark);
+      font-size: 0.9rem;
+    }
+
+    .item-title.completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      background: white;
+      color: var(--cherry-primary);
+      border: 1px solid var(--border-soft);
+    }
+
+    /* Form Grid Fixes for Mobile */
+    .responsive-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    @media (min-width: 600px) {
+      .responsive-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        align-items: end;
+      }
+    }
+
+    /* Scrapbook Polaroid Grid */
+    .polaroid-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 600px) {
+      .polaroid-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    }
+
+    .polaroid {
+      background: white;
+      padding: 0.6rem 0.6rem 1.2rem 0.6rem;
+      border-radius: 4px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+      border: 1px solid #eee;
+      position: relative;
+    }
+
+    .polaroid img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 2px;
+      margin-bottom: 0.5rem;
+    }
+
+    .polaroid-caption {
+      font-family: 'Playfair Display', serif;
+      text-align: center;
+      color: var(--cherry-dark);
+      font-size: 0.85rem;
+    }
+
+    .polaroid-date {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.2rem;
+    }
+
+    /* Song Grid */
+    .song-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 600px) {
+      .song-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    }
+
+    .song-card {
+      background: var(--pink-light);
+      border: 1px solid var(--border-soft);
+      padding: 0.9rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .song-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--cherry-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* Timer Display */
+    .timer-display {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: linear-gradient(180deg, var(--pink-light), #ffffff);
+      border-radius: var(--radius-lg);
+      border: 2px dashed var(--border-soft);
+      margin: 1rem 0;
+    }
+
+    .timer-clock {
+      font-size: 3.8rem;
+      font-weight: 700;
+      color: var(--cherry-primary);
+      font-family: monospace;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--pink-medium);
+    }
+
+    .btn-delete {
+      background: transparent;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      opacity: 0.7;
+      padding: 0.3rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sign In Modal -->
+  <div class="auth-modal" id="authModal">
+    <div class="auth-card">
+      <h2>Welcome to Cherry 🍒</h2>
+      <p>Enter your details to create your aesthetic personal life dashboard!</p>
+      <form id="authForm">
+        <div class="form-group">
+          <label for="userName">Your Name</label>
+          <input type="text" id="userName" class="form-control" placeholder="e.g. Eleanor" required>
+        </div>
+        <div class="form-group">
+          <label for="userHandle">Custom Handle</label>
+          <input type="text" id="userHandle" class="form-control" placeholder="e.g. @eleanor.mw" required>
+        </div>
+        <button type="submit" class="btn btn-cherry" style="width: 100%; margin-top: 0.5rem;">
+          Open My Cherry App ✨
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Header Navigation -->
+  <header>
+    <div class="header-container">
+      <a href="#" class="brand-logo">
+        <i class="fa-solid fa-cherries"></i> Cherry
+      </a>
+      
+      <nav>
+        <button class="nav-btn active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-house"></i> Home</button>
+        <button class="nav-btn" onclick="switchTab('planner', this)"><i class="fa-solid fa-calendar-check"></i> Tasks</button>
+        <button class="nav-btn" onclick="switchTab('journal', this)"><i class="fa-solid fa-book-bookmark"></i> Diary</button>
+        <button class="nav-btn" onclick="switchTab('timer', this)"><i class="fa-solid fa-stopwatch"></i> Timer</button>
+        <button class="nav-btn" onclick="switchTab('scrapbook', this)"><i class="fa-solid fa-images"></i> Memories</button>
+        <button class="nav-btn" onclick="switchTab('music', this)"><i class="fa-solid fa-music"></i> Songs</button>
+        <button class="nav-btn" onclick="switchTab('vision', this)"><i class="fa-solid fa-wand-magic-sparkles"></i> Vision</button>
+      </nav>
+
+      <div class="user-pill">
+        <div class="user-avatar" id="headerAvatar">C</div>
+        <span id="headerName" style="font-weight: 600; font-size: 0.8rem; display: none;">User</span>
+        <button class="btn-delete" title="Sign Out" onclick="signOut()"><i class="fa-solid fa-right-from-bracket"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+      <div class="welcome-banner">
+        <div>
+          <h1 id="dashGreeting">Welcome back! 🍒</h1>
+          <p id="dashSub">Your soft & organized personal space.</p>
+        </div>
+        <button class="btn btn-pink" onclick="switchTabByName('planner')">
+          <i class="fa-solid fa-plus"></i> Add Task
+        </button>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3 style="color: var(--cherry-primary);"><i class="fa-solid fa-list-check"></i> Today's Tasks</h3>
+          <div id="dashTasksList" style="margin-top: 0.8rem;"></div>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--cherry-primary);"><i class="fa-solid fa-heart"></i> Daily Habits</h3>
+          <form id="habitForm" style="display: flex; gap: 0.4rem; margin-top: 0.8rem;">
+            <input type="text" id="habitInput" class="form-control" placeholder="Add habit..." required>
+            <button type="submit" class="btn btn-cherry"><i class="fa-solid fa-plus"></i></button>
+          </form>
+          <div id="habitsList"></div>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--cherry-primary);"><i class="fa-solid fa-quote-left"></i> Today's Vibe</h3>
+          <form id="vibeForm" style="display: flex; gap: 0.4rem; margin-top: 0.8rem;">
+            <input type="text" id="vibeInput" class="form-control" placeholder="Set daily vibe..." required>
+            <button type="submit" class="btn btn-cherry"><i class="fa-solid fa-check"></i></button>
+          </form>
+          <div id="vibeDisplay" style="margin-top: 1rem;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. PLANNER -->
+    <div id="page-planner" class="page">
+      <div class="grid-2">
+        <div class="card">
+          <h2 style="color: var(--cherry-primary); font-family: 'Playfair Display', serif;"><i class="fa-solid fa-calendar-days"></i> Task Planner</h2>
+          <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.85rem;">Organize study, work, and personal goals.</p>
+
+          <form id="plannerForm" style="display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.2rem;">
+            <input type="text" id="taskInput" class="form-control" placeholder="What do you need to do?" required>
+            <div style="display: flex; gap: 0.5rem;">
+              <select id="taskCategory" class="form-control">
+                <option value="Academic">Academic</option>
+                <option value="Personal">Personal</option>
+                <option value="Life">Life Chores</option>
+              </select>
+              <button type="submit" class="btn btn-cherry" style="white-space: nowrap;"><i class="fa-solid fa-plus"></i> Add</button>
+            </div>
+          </form>
+
+          <div id="fullTasksList"></div>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--cherry-primary); margin-bottom: 0.5rem;"><i class="fa-solid fa-chart-pie"></i> Task Summary</h3>
+          <div style="text-align: center; padding: 1.2rem; background: var(--pink-light); border-radius: var(--radius-md); margin-top: 0.8rem;">
+            <h2 id="totalTasksCount" style="color: var(--cherry-primary); font-size: 2.2rem;">0</h2>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Tasks Remaining</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. JOURNAL -->
+    <div id="page-journal" class="page">
+      <div class="card">
+        <h2 style="color: var(--cherry-primary); font-family: 'Playfair Display', serif;"><i class="fa-solid fa-book-open"></i> Private Diary</h2>
+        <form id="journalForm" style="margin-top: 1rem;">
+          <div class="form-group">
+            <label>Entry Title</label>
+            <input type="text" id="journalTitle" class="form-control" placeholder="Title..." required>
+          </div>
+          <div class="form-group">
+            <label>Mood</label>
+            <select id="journalMood" class="form-control">
+              <option value="Happy 🌸">Happy 🌸</option>
+              <option value="Peaceful ☕">Peaceful ☕</option>
+              <option value="Productive ⚡">Productive ⚡</option>
+              <option value="Cozy 🍒">Cozy 🍒</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Thoughts</label>
+            <textarea id="journalContent" class="form-control" rows="3" placeholder="Dear Diary..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-cherry" style="width: 100%;"><i class="fa-solid fa-heart"></i> Save Entry</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3 style="color: var(--cherry-primary); margin-bottom: 0.8rem;">Past Entries</h3>
+        <div id="journalEntriesList"></div>
+      </div>
+    </div>
+
+    <!-- 4. TIMER -->
+    <div id="page-timer" class="page">
+      <div class="card" style="text-align: center;">
+        <h2 style="color: var(--cherry-primary); font-family: 'Playfair Display', serif;"><i class="fa-solid fa-stopwatch"></i> Focus Timer</h2>
+
+        <div class="timer-display">
+          <div class="timer-clock" id="timerClock">25:00</div>
+          <p id="timerMode" style="margin-top: 0.3rem; font-weight: 600; color: var(--cherry-accent); font-size: 0.9rem;">Focus Mode</p>
+        </div>
+
+        <div style="margin-bottom: 1.2rem; display: flex; gap: 0.4rem; justify-content: center;">
+          <input type="number" id="customMinutes" class="form-control" placeholder="Mins" min="1" max="180" style="width: 90px;" value="25">
+          <button class="btn btn-pink" onclick="setCustomTimer()"><i class="fa-solid fa-clock"></i> Set</button>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 0.6rem;">
+          <button class="btn btn-cherry" onclick="startTimer()"><i class="fa-solid fa-play"></i> Start</button>
+          <button class="btn btn-pink" onclick="pauseTimer()"><i class="fa-solid fa-pause"></i> Pause</button>
+          <button class="btn btn-pink" onclick="resetTimer()"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. SCRAPBOOK -->
+    <div id="page-scrapbook" class="page">
+      <div class="card">
+        <h2 style="color: var(--cherry-primary); font-family: 'Playfair Display', serif;"><i class="fa-solid fa-camera-retro"></i> Memory Scrapbook</h2>
+        <form id="scrapbookForm" class="responsive-form" style="margin-top: 1rem;">
+          <div class="form-group" style="margin: 0;">
+            <label>Caption</label>
+            <input type="text" id="picCaption" class="form-control" placeholder="Note..." required>
+          </div>
+          <div class="form-group" style="margin: 0;">
+            <label>Upload Photo</label>
+            <input type="file" id="picFile" class="form-control" accept="image/*" required>
+          </div>
+          <button type="submit" class="btn btn-cherry"><i class="fa-solid fa-upload"></i> Pin</button>
+        </form>
+      </div>
+
+      <div class="polaroid-grid" id="scrapbookGrid"></div>
+    </div>
+
+    <!-- 6. MUSIC -->
+    <div id="page-music" class="page">
+      <div class="card">
+        <h2 style="color: var(--cherry-primary); font-family: 'Playfair Display', serif;"><i class="fa-solid fa-compact-disc"></i> Song Lounge</h2>
+        <form id="musicForm" class="responsive-form" style="margin-top: 1rem;">
+          <div class="form-group" style="margin: 0;">
+            <label>Song Title</label>
+            <input type="text" id="songTitle" class="form-control" placeholder="Title..." required>
+          </div>
+          <div class="form-group" style="margin: 0;">
+            <label>Music Link</label>
+            <input type="url" id="songLink" class="form-control" placeholder="https://..." required>
+          </div>
+          <button type="submit" class="btn btn-cherry"><i class="fa-solid fa-plus"></i> Save</button>
+        </form>
+      </div>
+
+      <div class="song-grid" id="songsGrid"></div>
+    </div>
+
+    <!-- 7. VISION BOARD -->
+    <div id="page-vision" class="page">
+      <div class="card">
+        <h2 style="color: var(--cherry-primary); font-family: 'Playfair Display', serif;"><i class="fa-solid fa-wand-magic-sparkles"></i> Vision Board</h2>
+        <form id="visionForm" class="responsive-form" style="margin-top: 1rem;">
+          <div class="form-group" style="margin: 0;">
+            <label>Goal / Quote</label>
+            <input type="text" id="visionText" class="form-control" placeholder="Manifest..." required>
+          </div>
+          <div class="form-group" style="margin: 0;">
+            <label>Category Tag</label>
+            <input type="text" id="visionTag" class="form-control" placeholder="e.g. Life" required>
+          </div>
+          <button type="submit" class="btn btn-cherry"><i class="fa-solid fa-thumbtack"></i> Pin</button>
+        </form>
+      </div>
+
+      <div class="polaroid-grid" id="visionGrid"></div>
+    </div>
+  </main>
+
+  <script>
+    /* State Management */
+    let currentUser = JSON.parse(localStorage.getItem('cherry_user')) || null;
+    let tasks = JSON.parse(localStorage.getItem('cherry_tasks')) || [];
+    let habits = JSON.parse(localStorage.getItem('cherry_habits')) || [];
+    let vibe = localStorage.getItem('cherry_vibe') || '';
+    let journals = JSON.parse(localStorage.getItem('cherry_journals')) || [];
+    let scrapbooks = JSON.parse(localStorage.getItem('cherry_scrapbooks')) || [];
+    let songs = JSON.parse(localStorage.getItem('cherry_songs')) || [];
+    let visionCards = JSON.parse(localStorage.getItem('cherry_vision')) || [];
+
+    let timerInterval = null;
+    let timerTime = 25 * 60;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!currentUser) {
+        document.getElementById('authModal').style.display = 'flex';
+      } else {
+        document.getElementById('authModal').style.display = 'none';
+        updateUserUI();
+      }
+
+      renderTasks();
+      renderHabits();
+      renderVibe();
+      renderJournals();
+      renderScrapbook();
+      renderSongs();
+      renderVision();
+    });
+
+    document.getElementById('authForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('userName').value.trim();
+      const handle = document.getElementById('userHandle').value.trim();
+
+      currentUser = { name, handle };
+      localStorage.setItem('cherry_user', JSON.stringify(currentUser));
+      document.getElementById('authModal').style.display = 'none';
+      updateUserUI();
+    });
+
+    function updateUserUI() {
+      if (!currentUser) return;
+      document.getElementById('headerAvatar').innerText = currentUser.name.charAt(0).toUpperCase();
+      document.getElementById('dashGreeting').innerText = `Welcome back, ${currentUser.name}! 🍒`;
+      document.getElementById('dashSub').innerText = `${currentUser.handle} • Your aesthetic personal space`;
+    }
+
+    function signOut() {
+      if (confirm('Sign out of Cherry?')) {
+        localStorage.removeItem('cherry_user');
+        location.reload();
+      }
+    }
+
+    function switchTab(tabName, btnElement) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+      const selectedPage = document.getElementById(`page-${tabName}`);
+      if (selectedPage) selectedPage.classList.add('active');
+
+      if (btnElement) btnElement.classList.add('active');
+    }
+
+    function switchTabByName(tabName) {
+      const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabName));
+      switchTab(tabName, btn);
+    }
+
+    /* Tasks */
+    document.getElementById('plannerForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('taskInput').value.trim();
+      const category = document.getElementById('taskCategory').value;
+
+      tasks.push({ id: Date.now(), title, category, completed: false });
+      saveTasks();
+      document.getElementById('taskInput').value = '';
+    });
+
+    function toggleTask(id) {
+      tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+      saveTasks();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      saveTasks();
+    }
+
+    function saveTasks() {
+      localStorage.setItem('cherry_tasks', JSON.stringify(tasks));
+      renderTasks();
+    }
+
+    function renderTasks() {
+      const fullList = document.getElementById('fullTasksList');
+      const dashList = document.getElementById('dashTasksList');
+      const countDisplay = document.getElementById('totalTasksCount');
+
+      if (countDisplay) countDisplay.innerText = tasks.filter(t => !t.completed).length;
+
+      if (tasks.length === 0) {
+        const emptyHTML = `<div class="empty-state"><i class="fa-solid fa-heart-circle-check"></i><p style="font-size: 0.85rem;">No tasks added yet.</p></div>`;
+        fullList.innerHTML = emptyHTML;
+        dashList.innerHTML = emptyHTML;
+        return;
+      }
+
+      const tasksHTML = tasks.map(t => `
+        <div class="item-card">
+          <div class="item-left">
+            <input type="checkbox" class="item-checkbox" ${t.completed ? 'checked' : ''} onclick="toggleTask(${t.id})">
+            <span class="item-title ${t.completed ? 'completed' : ''}">${t.title}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.3rem;">
+            <span class="tag">${t.category}</span>
+            <button class="btn-delete" onclick="deleteTask(${t.id})"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+
+      fullList.innerHTML = tasksHTML;
+      dashList.innerHTML = tasksHTML;
+    }
+
+    /* Habits */
+    document.getElementById('habitForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('habitInput').value.trim();
+      habits.push({ id: Date.now(), title, completed: false });
+      localStorage.setItem('cherry_habits', JSON.stringify(habits));
+      renderHabits();
+      document.getElementById('habitInput').value = '';
+    });
+
+    function toggleHabit(id) {
+      habits = habits.map(h => h.id === id ? { ...h, completed: !h.completed } : h);
+      localStorage.setItem('cherry_habits', JSON.stringify(habits));
+      renderHabits();
+    }
+
+    function deleteHabit(id) {
+      habits = habits.filter(h => h.id !== id);
+      localStorage.setItem('cherry_habits', JSON.stringify(habits));
+      renderHabits();
+    }
+
+    function renderHabits() {
+      const list = document.getElementById('habitsList');
+      if (habits.length === 0) {
+        list.innerHTML = `<div class="empty-state" style="padding: 1rem;"><p style="font-size: 0.8rem;">No habits added yet.</p></div>`;
+        return;
+      }
+      list.innerHTML = habits.map(h => `
+        <div class="item-card" style="margin-top: 0.4rem;">
+          <div class="item-left">
+            <input type="checkbox" class="item-checkbox" ${h.completed ? 'checked' : ''} onclick="toggleHabit(${h.id})">
+            <span class="item-title ${h.completed ? 'completed' : ''}">${h.title}</span>
+          </div>
+          <button class="btn-delete" onclick="deleteHabit(${h.id})"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
+
+    /* Vibe */
+    document.getElementById('vibeForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      vibe = document.getElementById('vibeInput').value.trim();
+      localStorage.setItem('cherry_vibe', vibe);
+      renderVibe();
+    });
+
+    function renderVibe() {
+      const container = document.getElementById('vibeDisplay');
+      if (!vibe) {
+        container.innerHTML = `<p style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">No vibe set for today.</p>`;
+        return;
+      }
+      container.innerHTML = `
+        <p style="font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--cherry-dark); font-style: italic; margin-bottom: 0.4rem;">
+          "${vibe}"
+        </p>
+        <span class="tag">Cherry Mindset 🍒</span>
+      `;
+    }
+
+    /* Journal */
+    document.getElementById('journalForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('journalTitle').value.trim();
+      const mood = document.getElementById('journalMood').value;
+      const content = document.getElementById('journalContent').value.trim();
+      const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+      journals.unshift({ id: Date.now(), title, mood, content, date });
+      localStorage.setItem('cherry_journals', JSON.stringify(journals));
+      renderJournals();
+
+      document.getElementById('journalTitle').value = '';
+      document.getElementById('journalContent').value = '';
+    });
+
+    function renderJournals() {
+      const list = document.getElementById('journalEntriesList');
+      if (journals.length === 0) {
+        list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-feather"></i><p style="font-size: 0.85rem;">No diary entries saved.</p></div>`;
+        return;
+      }
+
+      list.innerHTML = journals.map(j => `
+        <div class="item-card" style="flex-direction: column; align-items: flex-start; gap: 0.4rem; background: #ffffff;">
+          <div style="display: flex; justify-content: space-between; width: 100%;">
+            <strong style="color: var(--cherry-primary); font-size: 0.95rem;">${j.title}</strong>
+            <span class="tag">${j.mood} • ${j.date}</span>
+          </div>
+          <p style="color: var(--text-main); font-size: 0.85rem; line-height: 1.4;">${j.content}</p>
+        </div>
+      `).join('');
+    }
+
+    /* Timer */
+    function updateClockDisplay() {
+      const mins = Math.floor(timerTime / 60);
+      const secs = timerTime % 60;
+      document.getElementById('timerClock').innerText = 
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function setCustomTimer() {
+      const val = parseInt(document.getElementById('customMinutes').value);
+      if (isNaN(val) || val <= 0) return;
+      pauseTimer();
+      timerTime = val * 60;
+      document.getElementById('timerMode').innerText = `${val} Min Session`;
+      updateClockDisplay();
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        if (timerTime > 0) {
+          timerTime--;
+          updateClockDisplay();
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          alert('Session finished! 🌸');
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timerTime = 25 * 60;
+      document.getElementById('timerClock').innerText = "25:00";
+      document.getElementById('timerMode').innerText = "Focus Mode";
+    }
+
+    /* Scrapbook */
+    document.getElementById('scrapbookForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const caption = document.getElementById('picCaption').value.trim();
+      const fileInput = document.getElementById('picFile');
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (evt) {
+          const imageSrc = evt.target.result;
+          const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+          scrapbooks.unshift({ id: Date.now(), caption, imageSrc, date });
+          localStorage.setItem('cherry_scrapbooks', JSON.stringify(scrapbooks));
+          renderScrapbook();
+
+          document.getElementById('picCaption').value = '';
+          fileInput.value = '';
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+    });
+
+    function deleteScrapbook(id) {
+      scrapbooks = scrapbooks.filter(s => s.id !== id);
+      localStorage.setItem('cherry_scrapbooks', JSON.stringify(scrapbooks));
+      renderScrapbook();
+    }
+
+    function renderScrapbook() {
+      const grid = document.getElementById('scrapbookGrid');
+      if (scrapbooks.length === 0) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><i class="fa-solid fa-camera"></i><p style="font-size: 0.85rem;">No photos saved yet.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = scrapbooks.map(s => `
+        <div class="polaroid">
+          <img src="${s.imageSrc}" alt="Memory">
+          <div class="polaroid-caption">${s.caption}</div>
+          <div class="polaroid-date">${s.date}</div>
+          <button class="btn-delete" style="position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.9); border-radius: 50%; width: 24px; height: 24px; display:flex; align-items:center; justify-content:center;" onclick="deleteScrapbook(${s.id})">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    /* Songs */
+    document.getElementById('musicForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('songTitle').value.trim();
+      const link = document.getElementById('songLink').value.trim();
+
+      songs.unshift({ id: Date.now(), title, link });
+      localStorage.setItem('cherry_songs', JSON.stringify(songs));
+      renderSongs();
+
+      document.getElementById('songTitle').value = '';
+      document.getElementById('songLink').value = '';
+    });
+
+    function deleteSong(id) {
+      songs = songs.filter(s => s.id !== id);
+      localStorage.setItem('cherry_songs', JSON.stringify(songs));
+      renderSongs();
+    }
+
+    function renderSongs() {
+      const grid = document.getElementById('songsGrid');
+      if (songs.length === 0) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><i class="fa-solid fa-music"></i><p style="font-size: 0.85rem;">No songs saved yet.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = songs.map(s => `
+        <div class="song-card">
+          <div class="song-icon"><i class="fa-solid fa-play"></i></div>
+          <div style="flex: 1; overflow: hidden;">
+            <h4 style="font-size: 0.9rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${s.title}</h4>
+            <a href="${s.link}" target="_blank" style="color: var(--cherry-primary); font-size: 0.75rem; font-weight: 600; text-decoration: none;">Listen ↗</a>
+          </div>
+          <button class="btn-delete" onclick="deleteSong(${s.id})"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
+
+    /* Vision */
+    document.getElementById('visionForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = document.getElementById('visionText').value.trim();
+      const tag = document.getElementById('visionTag').value.trim();
+
+      visionCards.unshift({ id: Date.now(), text, tag });
+      localStorage.setItem('cherry_vision', JSON.stringify(visionCards));
+      renderVision();
+
+      document.getElementById('visionText').value = '';
+      document.getElementById('visionTag').value = '';
+    });
+
+    function deleteVision(id) {
+      visionCards = visionCards.filter(v => v.id !== id);
+      localStorage.setItem('cherry_vision', JSON.stringify(visionCards));
+      renderVision();
+    }
+
+    function renderVision() {
+      const grid = document.getElementById('visionGrid');
+      if (visionCards.length === 0) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><i class="fa-solid fa-sparkles"></i><p style="font-size: 0.85rem;">No vision cards pinned yet.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = visionCards.map(v => `
+        <div class="polaroid" style="background: var(--pink-light); padding: 1rem; text-align: center;">
+          <p style="font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--cherry-dark); margin-bottom: 0.6rem;">"${v.text}"</p>
+          <span class="tag">${v.tag}</span>
+          <button class="btn-delete" style="position: absolute; top: 6px; right: 6px;" onclick="deleteVision(${v.id})">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
